@@ -71,11 +71,21 @@ export function ScenarioOptionsView() {
       sx={{
         minHeight: '100vh',
         background: '#667eea',
+        width: '100%',
+        maxWidth: '100% !important',
+        overflowX: 'hidden',
         py: 1,
-        px: 1,
+        px: 0,
       }}
     >
-      <Container maxWidth={false} sx={{ width: '100%', px: 0 }}>
+      <Container
+        maxWidth={false}
+        sx={{
+          width: '100%',
+          maxWidth: '100% !important',
+          px: 0,
+        }}
+      >
         <Box
           sx={{
             textAlign: 'center',
@@ -114,7 +124,7 @@ export function ScenarioOptionsView() {
 
         <Grid container spacing={3} sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
           {scenarios.map((scenario, index) => (
-            <Grid xs={12} sm={6} md={3} key={scenario.id}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={scenario.id}>
               <Card
                 onMouseEnter={() => setHoveredCard(scenario.id)}
                 onMouseLeave={() => setHoveredCard(null)}
@@ -138,7 +148,9 @@ export function ScenarioOptionsView() {
                     background: 'rgba(255, 255, 255, 1)',
                   },
                 }}
-                onClick={() => handleScenarioClick(scenario.id, scenario.subScenarios)}
+                onClick={() =>
+                  handleScenarioClick(scenario.id, scenario.subScenarios)
+                }
               >
                 <CardContent sx={{ textAlign: 'center', p: 4 }}>
                   <Box
@@ -146,7 +158,10 @@ export function ScenarioOptionsView() {
                       fontSize: '5rem',
                       mb: 3,
                       transition: 'transform 0.3s ease',
-                      transform: hoveredCard === scenario.id ? 'scale(1.2) rotate(5deg)' : 'scale(1)',
+                      transform:
+                        hoveredCard === scenario.id
+                          ? 'scale(1.2) rotate(5deg)'
+                          : 'scale(1)',
                       display: 'inline-block',
                     }}
                   >
@@ -195,7 +210,8 @@ export function ScenarioOptionsView() {
                           sx={{
                             px: 2.5,
                             py: 1,
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            background:
+                              'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                             color: 'white',
                             borderRadius: 2,
                             fontSize: '0.875rem',
