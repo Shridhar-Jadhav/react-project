@@ -14,18 +14,31 @@ export function ResultsView() {
   const score = parseFloat(searchParams.get('score') || '0');
   const scenarioType = searchParams.get('type') || 'product';
 
+  // FINAL – EXACT SAME LOGIC AS EvaluationView.tsx
   const getScoreBadge = (scoreValue: number) => {
-    if (scoreValue >= 8) return { label: 'HIGH INNOVATION POTENTIAL', color: '#4caf50' };
-    if (scoreValue >= 6) return { label: 'MODERATE INNOVATION POTENTIAL', color: '#ff9800' };
-    return { label: 'LOW INNOVATION POTENTIAL', color: '#f44336' };
+    if (scoreValue >= 8)
+      return { label: 'VERY HIGH INNOVATION POTENTIAL', color: '#4caf50' }; // green
+
+    if (scoreValue >= 6)
+      return { label: 'HIGH INNOVATION POTENTIAL', color: '#2196f3' }; // blue
+
+    if (scoreValue >= 3)
+      return { label: 'MEDIUM INNOVATION POTENTIAL', color: '#ff9800' }; // orange
+
+    return { label: 'LOW INNOVATION POTENTIAL', color: '#f44336' }; // red
   };
 
   const getSummary = (scoreValue: number) => {
     if (scoreValue >= 8)
-      return 'The evaluated innovation demonstrates strong potential across multiple dimensions. It addresses a significant need with a novel approach and shows promise for scalability and impact.';
+      return 'This innovation demonstrates very high potential and performs strongly across scalability, feasibility, novelty, and overall impact dimensions.';
+
     if (scoreValue >= 6)
-      return 'The innovation shows moderate potential with some promising aspects. There are areas that could benefit from further development and refinement to maximize impact.';
-    return 'The innovation requires substantial improvements in key areas. Consider revisiting the core approach and addressing fundamental challenges before proceeding.';
+      return 'This innovation shows high potential. It has strong characteristics and with refinement can create excellent impact.';
+
+    if (scoreValue >= 3)
+      return 'This innovation has medium potential. There are promising elements but it needs more refinement and validation to strengthen the outcome.';
+
+    return 'This innovation currently shows low potential. Core improvements are necessary before moving toward implementation.';
   };
 
   const badge = getScoreBadge(score);
@@ -42,6 +55,7 @@ export function ResultsView() {
               Here are your results
             </Typography>
 
+            {/* Score Circle */}
             <Box
               sx={{
                 width: 200,
@@ -64,6 +78,7 @@ export function ResultsView() {
               </Typography>
             </Box>
 
+            {/* Badge */}
             <Box
               sx={{
                 display: 'inline-block',
@@ -79,6 +94,7 @@ export function ResultsView() {
               {badge.label}
             </Box>
 
+            {/* Summary */}
             <Box sx={{ textAlign: 'left', mb: 4 }}>
               <Typography variant="h5" sx={{ fontWeight: 600, mb: 2 }}>
                 Summary
@@ -88,11 +104,12 @@ export function ResultsView() {
               </Typography>
             </Box>
 
+            {/* Button */}
             <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
               <Button
                 variant="outlined"
                 size="large"
-                onClick={() => router.push('/sign-up')}
+                onClick={() => router.push('/')}
                 sx={{ px: 4 }}
               >
                 Start New Scenario
