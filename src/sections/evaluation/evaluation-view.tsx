@@ -20,11 +20,12 @@ const questions = [
   'Is there evidence of stakeholder engagement and support?',
 ];
 
+// UPDATED OPTIONS ACCORDING TO RESULT SCORE LOGIC
 const options = [
-  { label: 'No / Unlikely', scoreRange: '0-3', maxScore: 3 },
-  { label: 'Less Likely / Possibly Yes', scoreRange: '4-6', maxScore: 6 },
-  { label: 'Much Likely / Yes', scoreRange: '7-8', maxScore: 8 },
-  { label: 'Certainly / Very High', scoreRange: '9-10', maxScore: 10 },
+  { label: 'Low Innovation Potential', scoreRange: '0-2', maxScore: 2 },
+  { label: 'Medium Innovation Potential', scoreRange: '3-5', maxScore: 5 },
+  { label: 'High Innovation Potential', scoreRange: '6-7', maxScore: 7 },
+  { label: 'Very High Innovation Potential', scoreRange: '8-10', maxScore: 10 },
 ];
 
 export function EvaluationView() {
@@ -37,15 +38,34 @@ export function EvaluationView() {
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
+  // Handle option selection
   const handleOptionSelect = (score: number) => {
-    const newScores = [...scores, score];
+    const newScores = [...scores];
+
+    // Overwrite score if user revisiting
+    newScores[currentQuestion] = score;
+
     setScores(newScores);
 
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      const avgScore = newScores.reduce((a, b) => a + b, 0) / newScores.length;
-      router.push(`/results?score=${avgScore.toFixed(1)}&type=${scenarioType}`);
+      const avg = newScores.reduce((a, b) => a + b, 0) / newScores.length;
+      router.push(`/results?score=${avg.toFixed(1)}&type=${scenarioType}`);
+    }
+  };
+
+  // Previous question
+  const handlePrevious = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
+    }
+  };
+
+  // Next question
+  const handleNext = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
     }
   };
 
@@ -54,17 +74,29 @@ export function EvaluationView() {
       <Box sx={{ minHeight: '100vh', py: 5 }}>
         <Card sx={{ p: 4 }}>
           <Box sx={{ mb: 4 }}>
-            <Typography variant="h4" sx={{ fontWeight: 600, mb: 2, textTransform: 'capitalize' }}>
-              {scenarioType} 1: Braino: Nano Panacia granules for elderly cognition 
+            <Typography
+              variant="h4"
+              sx={{ fontWeight: 600, mb: 2, textTransform: 'capitalize' }}
+            >
+              {scenarioType} 1: Braino: Nano Panacia granules for elderly cognition
             </Typography>
+
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
-              The startup, Be Well Private Limited, has developed ‘Braino’ granules- a unique nano formulation of the herb Panacia Ultimatun (PU), popularly known as Panacea. “Braino’ builds on the known safe use of PU in traditional medicine in several parts of Asia and increases ease of use as it is in granulation form. Its main advantage is that it overcomes the challenges of low and slow absorption and thus reduces the quantity of PU required for optimal gains. Be Well has published its studies in older adults showing its benefits for improved cognitive health and general well-being. Be Well has partnered with local cultivators who share profit from the company. The company plants three times the greens it harvests for Braino production every year ensuring conservation and environmental protection. Be Well has acquired GMP certification, ensuring the highest quality of Braino granules production. <br />Braino has been tested in clinical studies and shown the potential to improve the health of ageing population globally. Data from othe regions and long-term surveillance are awaited. 
+              The startup, Be Well Private Limited, has developed ‘Braino’ granules…
             </Typography>
 
             <Box sx={{ mb: 1 }}>
-              <LinearProgress variant="determinate" value={progress} sx={{ height: 8, borderRadius: 1 }} />
+              <LinearProgress
+                variant="determinate"
+                value={progress}
+                sx={{ height: 8, borderRadius: 1 }}
+              />
             </Box>
-            <Typography variant="body2" sx={{ color: 'text.secondary', textAlign: 'right' }}>
+
+            <Typography
+              variant="body2"
+              sx={{ color: 'text.secondary', textAlign: 'right' }}
+            >
               Question {currentQuestion + 1} of {questions.length}
             </Typography>
           </Box>
@@ -78,13 +110,14 @@ export function EvaluationView() {
               {options.map((option, index) => (
                 <Button
                   key={index}
-                  variant="outlined"
+                  variant={
+                    scores[currentQuestion] === option.maxScore ? 'contained' : 'outlined'
+                  }
                   onClick={() => handleOptionSelect(option.maxScore)}
                   sx={{
                     py: 2,
                     px: 3,
                     justifyContent: 'space-between',
-                    textAlign: 'left',
                     textTransform: 'none',
                     fontSize: '1rem',
                     '&:hover': {
@@ -94,6 +127,7 @@ export function EvaluationView() {
                   }}
                 >
                   <span>{option.label}</span>
+
                   <Box
                     component="span"
                     sx={{
@@ -111,6 +145,31 @@ export function EvaluationView() {
                 </Button>
               ))}
             </Box>
+          </Box>
+
+          {/* NEXT & PREVIOUS BUTTONS */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              mt: 4,
+            }}
+          >
+            <Button
+              variant="contained"
+              disabled={currentQuestion === 0}
+              onClick={handlePrevious}
+            >
+              Previous
+            </Button>
+
+            <Button
+              variant="contained"
+              disabled={scores[currentQuestion] == null}
+              onClick={handleNext}
+            >
+              Next
+            </Button>
           </Box>
         </Card>
       </Box>
