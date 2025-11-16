@@ -12,7 +12,7 @@ import { useRouter } from 'src/routes/hooks';
 const scenarios = [
   {
     id: 'product',
-    icon: '📦',
+    img: '/assets/images/category/product.png',
     title: 'Product',
     description: 'Evaluate product innovation, design, and market fit',
     subScenarios: [
@@ -22,7 +22,7 @@ const scenarios = [
   },
   {
     id: 'technology',
-    icon: '💡',
+    img: '/assets/images/category/technology.png',
     title: 'Technology',
     description: 'Assess technological advancement and implementation',
     subScenarios: [
@@ -32,7 +32,7 @@ const scenarios = [
   },
   {
     id: 'policy',
-    icon: '📋',
+    img: '/assets/images/category/policy.png',
     title: 'Policy',
     description: 'Analyze policy innovation and governance impact',
     subScenarios: [
@@ -42,7 +42,7 @@ const scenarios = [
   },
   {
     id: 'practice',
-    icon: '📊',
+    img: '/assets/images/category/practice.png',
     title: 'Practice',
     description: 'Review process innovation and best practices',
     subScenarios: [
@@ -149,18 +149,25 @@ export function ScenarioOptionsView() {
                 <CardContent sx={{ textAlign: 'center', p: 4 }}>
                   <Box
                     sx={{
-                      fontSize: '5rem',
                       mb: 3,
                       transition: 'transform 0.3s ease',
                       transform:
                         hoveredCard === scenario.id
-                          ? 'scale(1.2) rotate(5deg)'
+                          ? 'scale(1.15)'
                           : 'scale(1)',
-                      display: 'inline-block',
                     }}
                   >
-                    {scenario.icon}
+                    <img
+                      src={scenario.img}
+                      alt={scenario.title}
+                      style={{
+                        width: '80px',
+                        height: '80px',
+                        objectFit: 'contain',
+                      }}
+                    />
                   </Box>
+
                   <Typography
                     variant="h5"
                     sx={{

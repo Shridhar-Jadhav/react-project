@@ -17,12 +17,18 @@ export function UserInfo() {
     setUser(found || null);
     // dummy activities and answers - in real app replace with real data fetch
     setActivities([
-      { category: 'Product', scenarioId: 1 },
-      { category: 'Technology', scenarioId: 2 },
+      { category: 'Product', scenarioId: 'Product 1', result: 'Low - 2' },
+      { category: 'Product', scenarioId: 'Product 2', result: 'high - 7' },
     ]);
     setAnswers([
-      { question: 'Q1', answer: 'A' },
-      { question: 'Q2', answer: 'B' },
+      { question: 'Does the innovation address a significant problem or unmet need?', answer: 'Low Innovation Potential' },
+      { question: 'Is the solution novel or significantly different from existing alternatives?', answer: 'High Innovation Potential' },
+      { question: 'Does the innovation address a significant problem or unmet need?', answer: 'Low Innovation Potential' },
+      { question: 'Is the solution novel or significantly different from existing alternatives?', answer: 'High Innovation Potential' },
+      { question: 'Does the innovation address a significant problem or unmet need?', answer: 'Low Innovation Potential' },
+      { question: 'Is the solution novel or significantly different from existing alternatives?', answer: 'High Innovation Potential' },
+      { question: 'Does the innovation address a significant problem or unmet need?', answer: 'Low Innovation Potential' },
+      { question: 'Is the solution novel or significantly different from existing alternatives?', answer: 'High Innovation Potential' },
     ]);
   }, [id]);
 
@@ -49,14 +55,28 @@ export function UserInfo() {
               <TableRow key={idx}>
                 <TableCell>{a.category}</TableCell>
                 <TableCell>{a.scenarioId}</TableCell>
+                <TableCell>{a.result}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </Card>
 
-      <Card sx={{ p:2 }}>
-        <Typography variant="h6">Questions & Answers</Typography>
+      <Card sx={{ p:2, mb:2 }}>
+        <Typography variant="h6">Product 1 Questions & Answers</Typography>
+        <Table>
+          <TableBody>
+            {answers.map((a, idx)=>(
+              <TableRow key={idx}>
+                <TableCell>{a.question}</TableCell>
+                <TableCell>{a.answer}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Card>
+      <Card sx={{ p:2, mb:2 }}>
+        <Typography variant="h6">Product 2 Questions & Answers</Typography>
         <Table>
           <TableBody>
             {answers.map((a, idx)=>(

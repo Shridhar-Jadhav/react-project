@@ -72,7 +72,7 @@ export function SignInView() {
       if (!emailError && !passwordError) {
         if (email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password) {
           setLoginError('');
-          router.push('/users');
+          router.push('/');
         } else {
           if (email !== DEMO_CREDENTIALS.email) {
             setLoginError('Invalid email address. Please check your credentials.');

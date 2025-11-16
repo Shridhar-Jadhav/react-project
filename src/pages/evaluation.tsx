@@ -1,3 +1,5 @@
+
+import { useEffect } from 'react';
 import { CONFIG } from 'src/config-global';
 
 import { EvaluationView } from 'src/sections/evaluation/evaluation-view';
@@ -5,18 +7,39 @@ import { EvaluationView } from 'src/sections/evaluation/evaluation-view';
 // ----------------------------------------------------------------------
 
 export default function Page() {
-  return (
-    <>
-    <style>{`
-        .css-1xq1kdw {
-          max-width: 100% !important;
-          background: transparent;
-          padding: 0;
-        }
-      `}</style>
-      <title>{`Evaluation - ${CONFIG.appName}`}</title>
+  useEffect(() => {
+    let timer: any;
+    const reset = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        window.location.href = '/sign-up';
+      }, 60000);
+    };
+    reset();
+    window.addEventListener('mousemove', reset);
+    window.addEventListener('keydown', reset);
+    window.addEventListener('scroll', reset);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('mousemove', reset);
+      window.removeEventListener('keydown', reset);
+      window.removeEventListener('scroll', reset);
+    };
+  }, []);
+  {
+    return (
+      <>
+      <style>{`
+          .css-1xq1kdw {
+            max-width: 100% !important;
+            background: transparent;
+            padding: 0;
+          }
+        `}</style>
+        <title>{`Evaluation - ${CONFIG.appName}`}</title>
 
-      <EvaluationView />
-    </>
-  );
+        <EvaluationView />
+      </>
+    );
+  }
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
@@ -20,7 +20,6 @@ const questions = [
   'Is there evidence of stakeholder engagement and support?',
 ];
 
-// UPDATED OPTIONS ACCORDING TO RESULT SCORE LOGIC
 const options = [
   { label: 'Low Innovation Potential', scoreRange: '0-2', maxScore: 2 },
   { label: 'Medium Innovation Potential', scoreRange: '3-5', maxScore: 5 },
@@ -38,31 +37,56 @@ export function EvaluationView() {
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
-  // Handle option selection
+  // ----------------------------------------
+  // 🔥 1-minute inactivity redirect
+  // ----------------------------------------
+  useEffect(() => {
+    let timer: any;
+
+    const resetTimer = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        window.location.href = '/sign-up';
+      }, 60000); // 1 minute
+    };
+
+    resetTimer();
+
+    window.addEventListener('mousemove', resetTimer);
+    window.addEventListener('keydown', resetTimer);
+    window.addEventListener('scroll', resetTimer);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('mousemove', resetTimer);
+      window.removeEventListener('keydown', resetTimer);
+      window.removeEventListener('scroll', resetTimer);
+    };
+  }, []);
+
+  // ----------------------------------------
+  // Option select
+  // ----------------------------------------
   const handleOptionSelect = (score: number) => {
-    const newScores = [...scores];
+  const newScores = [...scores];
+  newScores[currentQuestion] = score;
+  setScores(newScores);
 
-    // Overwrite score if user revisiting
-    newScores[currentQuestion] = score;
+  // If NOT last question → go to next question
+  if (currentQuestion < questions.length - 1) {
+    setCurrentQuestion(currentQuestion + 1);
+  }
 
-    setScores(newScores);
+  // If last question:
+  // DO NOT redirect here.
+  // User will click Submit button manually.
+};
 
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      const avg = newScores.reduce((a, b) => a + b, 0) / newScores.length;
-      router.push(`/results?score=${avg.toFixed(1)}&type=${scenarioType}`);
-    }
-  };
 
-  // Previous question
   const handlePrevious = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
-    }
+    if (currentQuestion > 0) setCurrentQuestion(currentQuestion - 1);
   };
 
-  // Next question
   const handleNext = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
@@ -84,7 +108,6 @@ export function EvaluationView() {
             <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
               The startup, Be Well Private Limited, has developed ‘Braino’ granules- a unique nano formulation of the herb Panacia Ultimatun (PU), popularly known as Panacea. “Braino’ builds on the known safe use of PU in traditional medicine in several parts of Asia and increases ease of use as it is in granulation form. Its main advantage is that it overcomes the challenges of low and slow absorption and thus reduces the quantity of PU required for optimal gains. Be Well has published its studies in older adults showing its benefits for improved cognitive health and general well-being. Be Well has partnered with local cultivators who share profit from the company. The company plants three times the greens it harvests for Braino production every year ensuring conservation and environmental protection. Be Well has acquired GMP certification, ensuring the highest quality of Braino granules production. <br />Braino has been tested in clinical studies and shown the potential to improve the health of ageing population globally. Data from othe regions and long-term surveillance are awaited.
             </Typography>
-
 
             <Box sx={{ mb: 1 }}>
               <LinearProgress
@@ -112,7 +135,9 @@ export function EvaluationView() {
                 <Button
                   key={index}
                   variant={
-                    scores[currentQuestion] === option.maxScore ? 'contained' : 'outlined'
+                    scores[currentQuestion] === option.maxScore
+                      ? 'contained'
+                      : 'outlined'
                   }
                   onClick={() => handleOptionSelect(option.maxScore)}
                   sx={{
@@ -121,10 +146,6 @@ export function EvaluationView() {
                     justifyContent: 'space-between',
                     textTransform: 'none',
                     fontSize: '1rem',
-                    '&:hover': {
-                      bgcolor: 'primary.light',
-                      borderColor: 'primary.main',
-                    },
                   }}
                 >
                   <span>{option.label}</span>
@@ -148,7 +169,7 @@ export function EvaluationView() {
             </Box>
           </Box>
 
-          {/* NEXT & PREVIOUS BUTTONS */}
+          {/* NEXT / PREVIOUS / SUBMIT BUTTONS */}
           <Box
             sx={{
               display: 'flex',
@@ -164,13 +185,30 @@ export function EvaluationView() {
               Previous
             </Button>
 
-            <Button
-              variant="contained"
-              disabled={scores[currentQuestion] == null}
-              onClick={handleNext}
-            >
-              Next
-            </Button>
+            {currentQuestion === questions.length - 1 ? (
+              <Button
+                variant="contained"
+                disabled={scores[currentQuestion] == null}
+                onClick={() => {
+                  const avg =
+                    scores.reduce((a, b) => a + b, 0) / scores.length;
+
+                  router.push(
+                    `/results?score=${avg.toFixed(1)}&type=${scenarioType}`
+                  );
+                }}
+              >
+                Submit
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                disabled={scores[currentQuestion] == null}
+                onClick={handleNext}
+              >
+                Next
+              </Button>
+            )}
           </Box>
         </Card>
       </Box>
